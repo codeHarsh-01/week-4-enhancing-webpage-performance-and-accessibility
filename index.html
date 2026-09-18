@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Responsive, accessible developer portfolio for Harsh Goyal — built in Week 2, made interactive in Week 3, and optimized for performance and accessibility in Week 4.">
+    <title>Harsh Goyal | Accessible Developer Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header" id="siteHeader">
+        <div class="container nav-wrap">
+            <a class="logo" href="#home">HG<span>.</span></a>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark theme">
+                    <span class="theme-dot" aria-hidden="true"></span>
+                    <span id="themeToggleLabel">Dark</span>
+                </button>
+
+                <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="nav">
+                    <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <nav class="nav" id="nav">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero section" id="home" aria-labelledby="home-heading">
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <p class="eyebrow">CSE Student • Developer</p>
+                    <h1 id="home-heading">Building clean and <span>responsive</span> web experiences.</h1>
+                    <p class="hero-text">
+                        I am a computer science student focused on software development,
+                        backend technologies, and practical projects that solve real problems.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#projects">View Projects</a>
+                        <a class="btn btn-secondary" href="#contact">Contact Me</a>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="visual-card">
+                        <div class="code-top"><span></span><span></span><span></span></div>
+                        <div class="code-lines" id="codeLines">
+                            <p><b>&lt;developer&gt;</b></p>
+                            <p class="indent"><i>name</i> = <strong>"Harsh"</strong></p>
+                            <p class="indent"><i>focus</i> = <strong>"Development"</strong></p>
+                            <p class="indent"><i>responsive</i> = <strong>true</strong></p>
+                            <p><b>&lt;/developer&gt;</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section about reveal" id="about" aria-labelledby="about-heading">
+            <div class="container narrow">
+                <p class="eyebrow">About</p>
+                <h2 id="about-heading">Learning by building.</h2>
+                <p>
+                    I enjoy turning ideas into working software and improving my development
+                    skills through hands-on projects. This page now also demonstrates
+                    JavaScript-driven interactivity layered on top of last week's responsive layout.
+                </p>
+            </div>
+        </section>
+
+        <section class="section skills reveal" id="skills" aria-labelledby="skills-heading">
+            <div class="container">
+                <div class="section-heading">
+                    <div><p class="eyebrow">Technology Stack</p><h2 id="skills-heading">Skills</h2></div>
+                    <p>Flexible cards adapt from four columns to two and then one column.</p>
+                </div>
+                <div class="skills-grid">
+                    <article class="skill-card"><div class="skill-icon">01</div><h3>HTML5</h3><p>Semantic structure and accessible page organization.</p></article>
+                    <article class="skill-card"><div class="skill-icon">02</div><h3>CSS3</h3><p>Grid, Flexbox, media queries, fluid sizing and modern styling.</p></article>
+                    <article class="skill-card"><div class="skill-icon">03</div><h3>JavaScript</h3><p>Interactive browser experiences and basic DOM manipulation.</p></article>
+                    <article class="skill-card"><div class="skill-icon">04</div><h3>React</h3><p>Component-based frontend development and reusable UI.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section projects reveal" id="projects" aria-labelledby="projects-heading">
+            <div class="container">
+                <div class="section-heading">
+                    <div><p class="eyebrow">Selected Work</p><h2 id="projects-heading">Projects</h2></div>
+                    <p>Filter by category or browse everything below.</p>
+                </div>
+
+                <div class="filter-bar" id="filterBar" role="group" aria-label="Filter projects by category">
+                    <button type="button" class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+                    <button type="button" class="filter-btn" data-filter="web" aria-pressed="false">Web</button>
+                    <button type="button" class="filter-btn" data-filter="javascript" aria-pressed="false">JavaScript</button>
+                    <button type="button" class="filter-btn" data-filter="cpp" aria-pressed="false">C++</button>
+                </div>
+
+                <div class="projects-grid" id="projectsGrid">
+                    <article class="project-card" data-category="web">
+                        <div class="project-number">01</div>
+                        <h3>Responsive Portfolio</h3>
+                        <p>A mobile-first portfolio demonstrating responsive layout strategies.</p>
+                        <div class="tags"><span>HTML</span><span>CSS</span></div>
+                    </article>
+                    <article class="project-card" data-category="javascript">
+                        <div class="project-number">02</div>
+                        <h3>Word Analytics App</h3>
+                        <p>A utility concept for counting words, characters and reading time.</p>
+                        <div class="tags"><span>JavaScript</span><span>UI</span></div>
+                    </article>
+                    <article class="project-card" data-category="cpp">
+                        <div class="project-number">03</div>
+                        <h3>Game Project</h3>
+                        <p>An interactive game concept designed to make a classic game more engaging.</p>
+                        <div class="tags"><span>C++</span><span>SFML</span></div>
+                    </article>
+                </div>
+
+                <p class="filter-empty" id="filterEmpty" hidden>No projects in this category yet.</p>
+            </div>
+        </section>
+
+        <section class="section contact reveal" id="contact" aria-labelledby="contact-heading">
+            <div class="container contact-grid">
+                <div>
+                    <p class="eyebrow">Get in touch</p>
+                    <h2 id="contact-heading">Let's build something useful.</h2>
+                    <p>Have a project idea or collaboration opportunity? Send a message using the form and I will get back to you.</p>
+                </div>
+                <form class="contact-form" id="contactForm" novalidate>
+                    <div class="field">
+                        <label for="name">Name</label>
+                        <input id="name" type="text" placeholder="Your name" autocomplete="name" aria-describedby="nameError">
+                        <small class="field-error" id="nameError" aria-live="polite"></small>
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" placeholder="you@example.com" autocomplete="email" aria-describedby="emailError">
+                        <small class="field-error" id="emailError" aria-live="polite"></small>
+                    </div>
+
+                    <div class="field">
+                        <label for="message">Message</label>
+                        <textarea id="message" rows="5" placeholder="Write your message..." maxlength="500" aria-describedby="messageError messageCount"></textarea>
+                        <div class="field-meta">
+                            <small class="field-error" id="messageError" aria-live="polite"></small>
+                            <small class="field-count"><span id="messageCount">0</span>/500</small>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit" id="submitBtn">Send Message</button>
+                    <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-wrap">
+            <p>© <span id="currentYear">2026</span> Harsh Goyal</p>
+            <p>Week 3 • JavaScript Interactivity</p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top" hidden><span aria-hidden="true">↑</span></button>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

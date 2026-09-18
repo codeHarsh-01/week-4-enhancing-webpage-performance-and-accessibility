@@ -1,0 +1,590 @@
+:root {
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --text: #172033;
+    --muted: #657086;
+    --accent: #f26b38;
+    --border: #e5e8ef;
+    --dark: #101827;
+    --header-bg: rgba(255, 255, 255, .94);
+    --radius: 18px;
+    --container: 1120px;
+
+    /* Week 4 accessibility fix: the raw brand orange (--accent) measures
+       only 3.03:1 against white/light backgrounds — below the 4.5:1 WCAG
+       AA minimum for normal text. --accent-text is a darkened, verified
+       replacement (>=4.6:1 against every light-mode background it's used
+       on) for anywhere the color is used as TEXT in light mode. Dark mode
+       overrides it back to the original orange below, since that already
+       passes at 5.64:1 against the dark surfaces it appears on.
+       --btn-fill / --btn-fill-hover solve the same problem for solid
+       button/pill fills with white text on top; that pair's contrast
+       doesn't depend on theme (it's just white-vs-this-color), so one
+       value covers both themes. */
+    --accent-text: #C53F0D;
+    --btn-fill: #C53F0D;
+    --btn-fill-hover: #A9370B;
+
+    /* Redundancy cleanup: these two timing/easing pairs were repeated as
+       literal strings in ~15 separate transition declarations. */
+    --transition-fast: .2s ease;
+    --transition-med: .25s ease;
+    color-scheme: light;
+}
+
+/* Week 3: dark theme, toggled by JS via [data-theme="dark"] on <html>.
+   Only the variables that should change are overridden here — the
+   already-dark sections (.contact, .footer, .visual-card) stay as
+   deliberate constants in both themes. */
+html[data-theme="dark"] {
+    --bg: #0b111c;
+    --surface: #141c2b;
+    --text: #eef1f6;
+    --muted: #93a0b8;
+    --border: #2a3346;
+    --header-bg: rgba(11, 17, 28, .9);
+    --accent-text: #f26b38; /* original orange already passes 5.6:1+ against dark surfaces */
+    color-scheme: dark;
+}
+
+/* Week 4: visible keyboard-focus indicator, site-wide. Previously only
+   the contact form had an explicit focus style; every other control
+   (nav links, buttons, toggles, filter pills) relied on the browser
+   default, which is inconsistent across browsers and easy to lose track
+   of against custom backgrounds. */
+:focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Week 4: skip-to-content link (WCAG 2.4.1 Bypass Blocks). Hidden off-
+   screen until it receives keyboard focus, then appears as the very
+   first visible, focusable element on the page. */
+.skip-link {
+    position: absolute;
+    top: -48px;
+    left: 12px;
+    z-index: 1000;
+    background: var(--dark);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: .9rem;
+    transition: top var(--transition-fast);
+}
+.skip-link:focus {
+    top: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    transition: background-color var(--transition-med), color var(--transition-med);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.container {
+    width: min(100% - 40px, var(--container));
+    margin-inline: auto;
+}
+
+.narrow { max-width: 800px; }
+
+.section { padding: 88px 0; }
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    transition: background-color var(--transition-med), border-color var(--transition-med), box-shadow var(--transition-med);
+}
+
+/* Added once the page has scrolled a little, purely a subtle depth cue —
+   no height change, so nothing below the header shifts. */
+.site-header.scrolled { box-shadow: 0 10px 26px rgba(16, 24, 39, .08); }
+
+.nav-wrap {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.logo { font-size: 1.55rem; font-weight: 800; letter-spacing: -.06em; }
+.logo span { color: var(--accent); }
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+.theme-toggle:hover { border-color: var(--accent-text); }
+
+.theme-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+html[data-theme="dark"] .theme-dot {
+    background: #55607a;
+    box-shadow: inset 3px -2px 0 var(--surface);
+}
+
+.nav { display: flex; align-items: center; gap: 30px; }
+.nav a { color: var(--muted); font-size: .92rem; font-weight: 600; transition: color var(--transition-fast); }
+.nav a:hover { color: var(--accent-text); }
+.nav a.active { color: var(--accent-text); }
+
+.menu-toggle {
+    display: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    margin: 5px 0;
+    background: var(--text);
+    transition: transform var(--transition-med), opacity var(--transition-fast);
+}
+
+/* Hamburger animates into an X while the mobile menu is open. */
+.menu-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle.active span:nth-child(2) { opacity: 0; }
+.menu-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.hero {
+    min-height: 620px;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 85% 20%, rgba(242,107,56,.14), transparent 30%),
+                linear-gradient(135deg, #fff 0%, #fff7f2 100%);
+    transition: background-color var(--transition-med);
+}
+
+/* Dark mode: the hero used a hardcoded light gradient while its text
+   color follows the theme variable, so in dark mode the (now light)
+   text was landing on a (still light) background — nearly invisible.
+   Give dark mode its own dark version of the same gradient instead. */
+html[data-theme="dark"] .hero {
+    background: radial-gradient(circle at 85% 20%, rgba(242,107,56,.18), transparent 30%),
+                linear-gradient(135deg, var(--bg) 0%, #0d1420 100%);
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0,1.15fr) minmax(320px,.85fr);
+    align-items: center;
+    gap: 70px;
+}
+
+.eyebrow {
+    margin-bottom: 10px;
+    color: var(--accent-text);
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+h1 {
+    max-width: 700px;
+    font-size: clamp(2.5rem,5vw,4.8rem);
+    line-height: 1.05;
+    letter-spacing: -.055em;
+}
+
+h1 span { color: var(--accent-text); }
+
+h2 {
+    font-size: clamp(2rem,3vw,3rem);
+    line-height: 1.1;
+    letter-spacing: -.04em;
+}
+
+h3 { line-height: 1.25; }
+
+.hero-text {
+    max-width: 620px;
+    margin-top: 24px;
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-flex;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { color: #fff; background: var(--btn-fill); }
+.btn-primary:hover { background: var(--btn-fill-hover); }
+.btn-secondary { background: var(--surface); border-color: var(--border); }
+
+.visual-card {
+    padding: 28px;
+    border: 1px solid #252e3e;
+    border-radius: 22px;
+    background: var(--dark);
+    box-shadow: 0 24px 60px rgba(16,24,39,.18);
+    transform: rotate(2deg);
+}
+
+.code-top { display: flex; gap: 7px; margin-bottom: 28px; }
+.code-top span { width: 10px; height: 10px; border-radius: 50%; background: #6d7789; }
+
+.code-lines {
+    font-family: Consolas, monospace;
+    color: #dbe2ee;
+    font-size: clamp(.8rem,1.4vw,1rem);
+    line-height: 2;
+}
+
+.code-lines b { color: #fff; }
+.code-lines i { color: #9da9bb; font-style: normal; }
+.code-lines strong { color: #f7b39a; font-weight: 500; }
+.indent { padding-left: 24px; }
+
+.about { background: var(--surface); }
+.about p:last-child { margin-top: 18px; color: var(--muted); }
+
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 38px;
+}
+
+.section-heading > p { max-width: 420px; color: var(--muted); text-align: right; }
+
+.skills { background: var(--bg); }
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 18px;
+}
+
+.skill-card, .project-card {
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-med), border-color var(--transition-med);
+}
+
+.skill-card:hover, .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 35px rgba(16,24,39,.08);
+}
+
+.skill-icon, .project-number {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    margin-bottom: 22px;
+    border-radius: 12px;
+    color: var(--btn-fill); /* not --accent-text: this badge's background is a
+                                fixed light peach in both themes, so its text
+                                must stay fixed too, not swap with the theme */
+    background: #fff0e9;
+    font-size: .78rem;
+    font-weight: 800;
+}
+
+.skill-card p, .project-card p {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.projects { background: var(--surface); }
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 26px;
+}
+
+.filter-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--muted);
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+.filter-btn:hover { border-color: var(--accent-text); color: var(--accent-text); }
+.filter-btn.active { background: var(--btn-fill); border-color: var(--btn-fill); color: #fff; }
+
+.filter-empty {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 20px;
+}
+
+.project-card { min-height: 245px; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.tags span {
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #f0f2f6;
+    color: var(--muted);
+    font-size: .72rem;
+    font-weight: 700;
+}
+
+.contact { background: var(--dark); color: #fff; }
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: .9fr 1.1fr;
+    gap: 70px;
+    align-items: start;
+}
+
+.contact-grid > div > p:last-child {
+    max-width: 520px;
+    margin-top: 18px;
+    color: #aeb8c8;
+}
+
+.contact .eyebrow { color: #f7a47e; }
+
+.contact-form { display: grid; gap: 16px; }
+
+.contact-form .field { display: flex; flex-direction: column; gap: 6px; }
+
+.contact-form label {
+    color: #dce2ec;
+    font-size: .85rem;
+    font-weight: 600;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #354154;
+    border-radius: 10px;
+    outline: none;
+    background: #172132;
+    color: #fff;
+    font: inherit;
+    resize: vertical;
+    transition: border-color .15s ease;
+}
+
+.contact-form input:focus, .contact-form textarea:focus { border-color: var(--accent); }
+
+.contact-form input[aria-invalid="true"],
+.contact-form textarea[aria-invalid="true"] { border-color: #ff8577; }
+
+.field-error {
+    min-height: 15px;
+    color: #ff8577;
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.field-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.field-count { color: #8592a8; font-size: .75rem; white-space: nowrap; }
+
+.btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+.form-status { min-height: 24px; color: #f7a47e; font-size: .85rem; font-weight: 600; }
+.form-status[data-state="error"] { color: #ff8577; }
+
+.footer { background: #0b111c; color: #8f9aac; }
+
+.footer-wrap {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: .8rem;
+}
+
+/* Week 3: scroll-reveal utility. JS adds .is-visible once a section
+   with .reveal enters the viewport; it never re-hides afterwards. */
+.reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+.back-to-top {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 46px;
+    height: 46px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--btn-fill);
+    color: #fff;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 14px 30px rgba(16, 24, 39, .2);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+    z-index: 90;
+}
+.back-to-top:hover { transform: translateY(-3px); background: var(--btn-fill-hover); }
+
+@media (max-width: 1024px) {
+    .section { padding: 72px 0; }
+    .hero-grid { grid-template-columns: 1fr .8fr; gap: 42px; }
+    .skills-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .projects-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .contact-grid { gap: 45px; }
+}
+
+@media (max-width: 767px) {
+    .container { width: min(100% - 28px, var(--container)); }
+    .section { padding: 60px 0; }
+
+    .nav {
+        position: absolute;
+        top: 72px;
+        right: 14px;
+        left: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        box-shadow: 0 16px 35px rgba(16,24,39,.12);
+        opacity: 0;
+        transform: translateY(-8px);
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity var(--transition-fast), transform var(--transition-fast), visibility .2s, background-color var(--transition-med), border-color var(--transition-med);
+    }
+
+    .nav.open {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .nav a { padding: 13px; }
+    .menu-toggle { display: block; }
+
+    .hero { min-height: auto; }
+    .hero-grid { grid-template-columns: 1fr; gap: 45px; }
+    .hero-content { text-align: center; }
+    .hero-text { margin-inline: auto; }
+    .hero-actions { justify-content: center; }
+
+    .visual-card { max-width: 520px; margin-inline: auto; transform: none; }
+
+    .section-heading { display: block; margin-bottom: 28px; }
+    .section-heading > p { margin-top: 14px; text-align: left; }
+
+    .skills-grid, .projects-grid { grid-template-columns: 1fr; }
+
+    .contact-grid { grid-template-columns: 1fr; gap: 38px; }
+
+    .footer-wrap {
+        min-height: 90px;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .section { padding: 48px 0; }
+    h1 { font-size: clamp(2.15rem,11vw,3rem); }
+    h2 { font-size: 2rem; }
+    .hero-actions { flex-direction: column; }
+    .hero-actions .btn { width: 100%; }
+    .visual-card { padding: 20px; border-radius: 16px; }
+    .code-lines { font-size: .72rem; }
+    .indent { padding-left: 12px; }
+    .skill-card, .project-card { padding: 22px; }
+}
